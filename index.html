@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Pokedex</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+
+    <meta name="description" content="An interactive Pokedex to explore all Pokémon, their forms, stats, and evolutions.">
+
+    <meta property="og:title" content="Interactive Modern Pokedex">
+    <meta property="og:description" content="Explore all Pokémon, their forms, stats, evolutions, and customize your viewing experience!">
+    <meta property="og:image" content="https://m.media-amazon.com/images/I/41rbgnIIEJL.jpg"> <meta property="og:url" content="https://pokebeta.dorame.party/"> <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Interactive Modern Pokedex">
+    <meta name="twitter:description" content="Explore all Pokémon, their forms, stats, evolutions, and customize your viewing experience!">
+    <meta name="twitter:image" content="https://m.media-amazon.com/images/I/41rbgnIIEJL.jpg"> <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Georgia&family=Courier+New&display=swap" rel="stylesheet">
@@ -143,27 +153,20 @@
         .legacy-deco { display: none; }
         body.legacy-mode .legacy-deco { display: block; position: absolute; }
         .legacy-deco-light { width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.5); box-shadow: inset 0 0 5px rgba(0,0,0,0.3); }
-        /* Positioning relative to pokedex-container-wrapper (the red shell) */
         .legacy-deco-light.blue { background-color: #3b82f6; top: 0.75rem; left: 1.25rem; width: 30px; height: 30px;}
-        .legacy-deco-light.red { background-color: #f87171; top: calc(0.75rem + 7px); left: calc(1.25rem + 40px);} /* Adjusted left */
-        .legacy-deco-light.yellow { background-color: #facc15; top: calc(0.75rem + 7px); left: calc(1.25rem + 70px);} /* Adjusted left */
-        .legacy-deco-light.green { background-color: #4ade80; top: calc(0.75rem + 7px); left: calc(1.25rem + 100px);} /* Adjusted left */
+        .legacy-deco-light.red { background-color: #f87171; top: calc(0.75rem + 7px); left: calc(1.25rem + 40px);}
+        .legacy-deco-light.yellow { background-color: #facc15; top: calc(0.75rem + 7px); left: calc(1.25rem + 70px);}
+        .legacy-deco-light.green { background-color: #4ade80; top: calc(0.75rem + 7px); left: calc(1.25rem + 100px);}
         .legacy-deco-button { border-radius: 0.375rem; background-color: #4b5563; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .legacy-deco-button.rect { bottom: 0.75rem; left: 1.5rem; width: 50px; height: 15px; }
         .legacy-deco-button.circle { bottom: 0.6rem; left: 5.5rem; width: 30px; height: 30px; border-radius: 50%; background-color: #374151; }
 
         /* Panel Titles (h2, section-title) */
-        .panel h2, .panel .section-title, #pokemon-name, #pokemon-id {
-            color: var(--text-panel-default);
-        }
+        .panel h2, .panel .section-title, #pokemon-name, #pokemon-id { color: var(--text-panel-default); }
         body.dark-mode .panel h2, body.dark-mode .panel .section-title,
-        body.dark-mode #pokemon-name, body.dark-mode #pokemon-id {
-            color: var(--text-default); /* Light text on dark panels */
-        }
+        body.dark-mode #pokemon-name, body.dark-mode #pokemon-id { color: var(--text-default); }
         body.legacy-mode .panel h2, body.legacy-mode .panel .section-title,
-        body.legacy-mode #pokemon-name, body.legacy-mode #pokemon-id {
-            color: #1f2937; /* Dark text on light gray legacy screens */
-        }
+        body.legacy-mode #pokemon-name, body.legacy-mode #pokemon-id { color: #1f2937; }
 
 
         .loader { border: 4px solid var(--button-secondary-bg); border-top: 4px solid var(--accent-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
@@ -195,7 +198,7 @@
         .pokemon-list-item.selected { background-color: var(--list-item-selected-bg); border-left-color: var(--list-item-selected-border); font-weight: 600; }
         .pokemon-list-item.selected span { color: var(--list-item-selected-text); }
         #pokemon-evolution { border-top: 1px solid var(--border-color); color: var(--text-muted); }
-        #pokemon-evolution .font-medium { color: var(--text-panel-default); } /* Ensure evolution labels use panel text color */
+        #pokemon-evolution .font-medium { color: var(--text-panel-default); }
         .evolution-link { cursor: pointer; color: var(--accent-color); text-decoration: none; font-weight: 500; }
         .evolution-link:hover { color: var(--accent-hover); text-decoration: underline; }
         #search-container { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
@@ -411,7 +414,7 @@
         let evolutionChainCache = {};
         let currentPokemonDetails = null;
         let selectedGender = 'default';
-        let themeDebounceTimer; // For debouncing color picker input
+        let themeDebounceTimer;
 
         // --- Utility Functions ---
         async function fetchData(url, cache = null) { if (cache && cache[url]) { return cache[url]; } try { const response = await fetch(url); if (!response.ok) { if (response.status === 404) { console.warn(`Not found (404): ${url}`); return null; } throw new Error(`HTTP error ${response.status} for ${url}`); } const data = await response.json(); if (cache) { cache[url] = data; } return data; } catch (error) { console.error("Fetch error:", error); return null; } }
@@ -438,7 +441,7 @@
             var g = parseInt(hexcolor.substr(2,2),16);
             var b = parseInt(hexcolor.substr(4,2),16);
             var yiq = ((r*299)+(g*587)+(b*114))/1000;
-            return (yiq >= 128) ? '#1f2937' : '#ffffff'; // Default dark text on light bg, white on dark bg
+            return (yiq >= 128) ? '#1f2937' : '#ffffff';
         }
 
         function applyTheme() {
@@ -454,8 +457,7 @@
             if (isLegacyMode) {
                 customColorOptionsDiv.classList.add('hidden');
                 pageBgColorOptionDiv.classList.add('hidden');
-                // Legacy styles are primarily handled by CSS variables in body.legacy-mode
-                rootStyle.setProperty('--text-panel-default', 'var(--text-default)'); // Uses legacy's --text-default
+                rootStyle.setProperty('--text-panel-default', 'var(--text-default)');
                 modalBoxes.forEach(box => box.style.backgroundColor = 'var(--modal-bg)');
             } else {
                 customColorOptionsDiv.classList.remove('hidden');
@@ -481,7 +483,7 @@
                     rootStyle.setProperty('--panel-bg', 'transparent');
                     rootStyle.setProperty('--text-panel-default', isDarkMode ? '#f3f4f6' : '#1f2937');
                 }
-                modalBoxes.forEach(box => box.style.backgroundColor = 'var(--modal-bg)'); // Apply the correct modal bg
+                modalBoxes.forEach(box => box.style.backgroundColor = 'var(--modal-bg)');
 
                 const newAccentColor = accentColorInput.value;
                 rootStyle.setProperty('--accent-color', newAccentColor);
@@ -490,17 +492,15 @@
                 rootStyle.setProperty('--list-item-selected-border', newAccentColor);
             }
 
-            // Explicitly set title colors based on the final panel text color
             const currentPanelTextColor = getComputedStyle(document.documentElement).getPropertyValue('--text-panel-default').trim();
             document.querySelectorAll('.panel h2, .panel .section-title, #pokemon-name, #pokemon-id').forEach(titleEl => {
                 titleEl.style.color = currentPanelTextColor;
             });
-            // Specific override for dark mode titles if the panel text is dark (e.g., from a custom light panel bg)
             if (isDarkMode && !isLegacyMode) {
-                 const panelBgForContrast = customGradientSection.classList.contains('hidden') ? panelBgColorInput.value : '#1f2937'; // Use dark default for gradient
-                 if (getContrastYIQ(panelBgForContrast) === '#1f2937') { // If calculated text for panel is dark
+                 const panelBgForContrast = customGradientSection.classList.contains('hidden') ? panelBgColorInput.value : '#1f2937';
+                 if (getContrastYIQ(panelBgForContrast) === '#1f2937') {
                      document.querySelectorAll('.panel h2, .panel .section-title, #pokemon-name, #pokemon-id').forEach(titleEl => {
-                        titleEl.style.color = 'var(--text-default)'; // Force light text
+                        titleEl.style.color = 'var(--text-default)';
                     });
                  }
             }
@@ -517,7 +517,6 @@
         function shadeColor(color, percent) { let R = parseInt(color.substring(1,3),16); let G = parseInt(color.substring(3,5),16); let B = parseInt(color.substring(5,7),16); R = parseInt(R * (100 + percent) / 100); G = parseInt(G * (100 + percent) / 100); B = parseInt(B * (100 + percent) / 100); R = (R<255)?R:255; G = (G<255)?G:255; B = (B<255)?B:255; R = Math.max(0, R); G = Math.max(0, G); B = Math.max(0, B); const RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16)); const GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16)); const BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16)); return "#"+RR+GG+BB; }
         function hexToRgba(hex, alpha) { const r = parseInt(hex.slice(1, 3), 16); const g = parseInt(hex.slice(3, 5), 16); const b = parseInt(hex.slice(5, 7), 16); return `rgba(${r}, ${g}, ${b}, ${alpha})`; }
 
-        // Debounce function
         function debounce(func, delay) {
             let timeout;
             return function(...args) {
@@ -533,14 +532,12 @@
         async function initializePokedex() {
             console.log("Pokedex initializing...");
 
-            // Event Delegation Setup
             pokemonListElement.addEventListener('click', (event) => { const li = event.target.closest('li'); if (li?.dataset.url) handlePokemonSelection(li.dataset.url, li); });
             evolutionContainer.addEventListener('click', (event) => { const link = event.target.closest('.evolution-link'); if (link?.dataset.pokemonUrl) { const url = link.dataset.pokemonUrl; const li = pokemonListElement.querySelector(`li[data-url="${url}"]`); if (li) { li.scrollIntoView({ behavior: 'smooth', block: 'center' }); handlePokemonSelection(url, li); } else { handlePokemonSelection(url, null); } } });
             maleButton.addEventListener('click', handleGenderClick);
             femaleButton.addEventListener('click', handleGenderClick);
             formsContainer.addEventListener('click', (event) => { const link = event.target.closest('.form-link'); if (link?.dataset.pokemonUrl) { const url = link.dataset.pokemonUrl; const li = pokemonListElement.querySelector(`li[data-url="${url}"]`); if (li) { li.scrollIntoView({ behavior: 'smooth', block: 'center' }); handlePokemonSelection(url, li); } else { handlePokemonSelection(url, null); } } });
 
-            // Modal Event Listeners
             creditsButton.addEventListener('click', () => { creditsModal.classList.remove('hidden'); });
             modalCloseButtonCredits.addEventListener('click', () => { creditsModal.classList.add('hidden'); });
             creditsModal.addEventListener('click', (event) => { if (event.target === creditsModal) { creditsModal.classList.add('hidden'); } });
@@ -549,7 +546,6 @@
             searchHelpModalCloseButton.addEventListener('click', () => { searchHelpModal.classList.add('hidden'); });
             searchHelpModal.addEventListener('click', (event) => { if (event.target === searchHelpModal) { searchHelpModal.classList.add('hidden'); } });
 
-            // Theme & Settings Modal Listeners
             if (themeButton) themeButton.addEventListener('click', () => themeSettingsModal.classList.remove('hidden'));
             if (themeModalCloseButton) themeModalCloseButton.addEventListener('click', () => themeSettingsModal.classList.add('hidden'));
             if (themeSettingsModal) themeSettingsModal.addEventListener('click', (event) => { if (event.target === themeSettingsModal) themeSettingsModal.classList.add('hidden'); });
@@ -558,7 +554,6 @@
             if (fontModalCloseButton) fontModalCloseButton.addEventListener('click', () => fontSettingsModal.classList.add('hidden'));
             if (fontSettingsModal) fontSettingsModal.addEventListener('click', (event) => { if (event.target === fontSettingsModal) fontSettingsModal.classList.add('hidden'); });
 
-            // Theme Mode Buttons
             if (themeModeButtons) themeModeButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     themeModeButtons.forEach(btn => btn.classList.remove('active'));
@@ -581,7 +576,6 @@
             if (themeSettingsModal) themeSettingsModal.querySelector('[data-theme-mode="light"]')?.classList.add('active');
 
 
-            // Panel Style Buttons (Solid/Gradient)
             if (panelStyleButtons) panelStyleButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     panelStyleButtons.forEach(btn => btn.classList.remove('active'));
@@ -599,7 +593,6 @@
             if (themeSettingsModal) themeSettingsModal.querySelector('[data-panel-style="solid"]')?.classList.add('active');
 
 
-            // Color Inputs with Debounce
             if (pageBgColorInput) pageBgColorInput.addEventListener('input', debouncedApplyTheme);
             if (panelBgColorInput) panelBgColorInput.addEventListener('input', debouncedApplyTheme);
             if (accentColorInput) accentColorInput.addEventListener('input', debouncedApplyTheme);
@@ -607,7 +600,6 @@
             if (gradientColor2Input) gradientColor2Input.addEventListener('input', debouncedApplyTheme);
 
 
-            // Reset Theme Button
             if (resetThemeButton) resetThemeButton.addEventListener('click', () => {
                 document.body.classList.remove('dark-mode', 'legacy-mode');
                 themeModeButtons.forEach(btn => btn.classList.remove('active'));
@@ -643,10 +635,8 @@
             });
 
 
-            // Font Family Select
             if (fontFamilySelect) fontFamilySelect.addEventListener('change', applyFontSettings);
 
-            // Font Weight Buttons
             if (fontWeightButtons) fontWeightButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     fontWeightButtons.forEach(btn => btn.classList.remove('active'));
@@ -657,7 +647,6 @@
             if (fontSettingsModal) fontSettingsModal.querySelector('[data-font-weight="normal"]')?.classList.add('active');
 
 
-            // Initial list fetch
             listLoader.style.display = 'block';
             listLoadingMessage.style.display = 'block';
             pokemonListElement.innerHTML = '';
@@ -690,10 +679,8 @@
             console.log("Pokedex initialization finished.");
         }
 
-        // --- Event Listeners ---
         searchInput.addEventListener('input', filterPokemonList);
 
-        // --- Start ---
         document.addEventListener('DOMContentLoaded', () => {
             initializePokedex();
         });
